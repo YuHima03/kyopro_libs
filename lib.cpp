@@ -80,7 +80,7 @@ struct xy_comp {
 	}
 
 	xy_comp<T>& operator--(int) {
-		this += 1;
+		this -= 1;
 		return *this;
 	}
 
@@ -105,6 +105,18 @@ struct xy_comp {
 
 	xy_comp<T> operator/=(const T v) {
 		this = this / v;
+		return *this;
+	}
+
+	xy_comp<T> operator%(const T v) const {
+		return {
+			x % v,
+			y % v
+		};
+	}
+ 
+	xy_comp<T>& operator%=(const T v) {
+		this = this % v;
 		return *this;
 	}
 
@@ -159,4 +171,94 @@ struct xy_comp {
 	double len(const xy_comp<T> c)const {
 		return sqrt(len_sq(c));
 	}
+};
+
+template<typename T = int, T mod = 1000000007>
+struct mod_num {
+	T value;
+
+	mod_num(T v) {
+		this = v;
+	}
+
+	operator T()const {
+		return value;
+	}
+
+	mod_num<T, mod>& operator=(const T v) {
+		value = v % mod;
+		return *this;
+	}
+
+	bool operator==(const mod_num<T, mod>& v)const {
+		return value == v.value;
+	}
+
+	bool operator!=(const mod_num<T, mod>& v)const {
+		return !(this == v);
+	}
+
+	mod_num<T, mod> operator+(const mod_num<T, mod>& v)const {
+		return mod_num<T, mod>(value + v.value);
+	}
+
+	mod_num<T, mod>& operator+=(const mod_num<T, mod>& v) {
+		this = this + v;
+		return *this;
+	}
+
+	mod_num<T, mod>& operator++(int) {
+		value++;
+		if (value >= mod) value = 0;
+		return *this;
+	}
+
+	mod_num<T, mod> operator-(const mod_num<T, mod>& v)const {
+		return mod_num<T, mod>(value - v.value);
+	}
+
+	mod_num<T, mod>& operator-=(const mod_num<T, mod>& v) {
+		this = this - v;
+		return *this;
+	}
+
+	mod_num<T, mod>& operator--(int) {
+		value--;
+		if (value < 0) value = mod;
+		return *this;
+	}
+
+	mod_num<T, mod> operator*(const mod_num<T, mod>& v)const {
+		return mod_num<T, mod>(value * v.value);
+	}
+
+	mod_num<T, mod>& operator*=(const mod_num<T, mod>& v) {
+		this = this * v;
+		return *this;
+	}
+
+	friend ostream &operator<<(ostream &os, const mod_num<T, mod> &v)const {
+		return os << v.value;
+	}
+
+	friend istream &operator>>(istream &is, mod_num<T, mod> &x) {
+		T t;
+		is >> t;
+		x = t;
+		return (is);
+	}
+
+	void pow(T x) {
+		value = std::pow(value, x) % mod;
+	}
+};
+
+template<int mod = 1000000007>
+using mod_int = mod_num<int, mod>;
+
+template<ll mod = 1000000007>
+using mod_ll = mod_num<ll, mod>;
+
+class union_find {
+
 };
